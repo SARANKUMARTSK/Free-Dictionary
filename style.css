@@ -1,0 +1,22 @@
+.page{
+    background-color: aquamarine;
+    text-align: center;
+    padding: 20px;
+}
+.word-input{
+    height: 30px;
+    width: 250px;
+}
+.get-data-btn{
+    height: 30px;
+    color: white;
+    background-color:gray;
+    box-shadow: 2px 2px;
+    font-weight: bold;
+}
+.image{
+    border-radius: 20px;
+}
+*{
+    background-color: aquamarine;
+}

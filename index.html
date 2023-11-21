@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dictionary Lookup</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js"></script>
+</head>
+
+<body>
+    <div class="page">
+        <img class="image"
+            src="https://previews.123rf.com/images/devke/devke1210/devke121000001/15565012-dictionary-books.jpg"
+            height=300px width=300px alt="Dictionary-Image">
+        <h1>Enter a Word:</h1>
+        <input type="text" class="word-input" placeholder="Enter a word">
+
+        <button class="get-data-btn">Get Definition</button>
+
+        <div class="result"></div>
+    </div>
+
+
+    <script>
+        // Function to fetch the definition of a word using an API
+        function fetchDefinition(word) {
+            return new Promise((resolve, reject) => {
+                // API endpoint for fetching word definitions
+                const apiEndpoint = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+
+                // Fetch data from the API endpoint
+                fetch(apiEndpoint)
+                    .then(response => {
+                        // Check if the response is successful
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch data');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Check if the response data contains the word definition
+                        if (Array.isArray(data) && data.length > 0) {
+                            // Extract the definition from the API response
+                            const definition = data[0]?.meanings[0]?.definitions[0]?.definition || 'No definition found';
+
+                            // Resolve the promise with the word and its definition
+                            resolve({
+                                word: word,
+                                definition: definition
+                            });
+                        } else {
+                            // Reject the promise if no definition is found
+                            reject(new Error(`No definition found for ${word}`));
+                        }
+                    })
+                    .catch(error => reject(error));
+            });
+        }
+
+        // Function to display the word and its definition on the webpage
+        function displayDefinition(word, data) {
+            const resultDiv = document.querySelector('.result');
+            // Update the HTML to display the word and its definition
+            resultDiv.innerHTML = `
+        <h2>Word: ${data.word}</h2>
+        <h2>Definition: ${data.definition}</h2>
+    `;
+        }
+
+        // Function to display error messages on the webpage
+        function showError(message) {
+            const resultDiv = document.querySelector('.result');
+            // Show an error message in the HTML
+            resultDiv.innerHTML = `<h2>Error: ${message}</h2>`;
+        }
+
+        // Function triggered when the "Get Definition" button is clicked
+        function getDefinition() {
+            const word = document.querySelector('.word-input').value.trim();
+            // Get the word input by the user
+
+            // Fetch the definition of the word and handle success or error responses
+            fetchDefinition(word)
+                .then(data => displayDefinition(word, data))
+                .catch(error => showError(error.message));
+        }
+
+        // Event listener to execute the getDefinition function when the button is clicked
+        document.querySelector('.get-data-btn').addEventListener('click', getDefinition);
+    </script>
+</body>
+
+</html>
